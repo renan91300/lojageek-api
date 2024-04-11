@@ -1,8 +1,18 @@
-from fastapi import FastAPI, File, UploadFile
-from typing import List
+from fastapi import FastAPI, File, UploadFile, Response, status
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Optional
 from pydantic import BaseModel, Field #Modelos Bases para os objetos das requisições
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
+
 
 class Product(BaseModel): #Herança de BaseMOdel
     id: int = Field(None)
@@ -19,8 +29,9 @@ class Product(BaseModel): #Herança de BaseMOdel
     qty_items_per_box: int
     ean: str
     promo: bool
-    promo_discount: float
-
+    promo_discount: Optional[float]
+    qty_stock: int
+    
 products: List[Product] = []
 product_next_id = 1
 
@@ -44,7 +55,7 @@ client_next_id = 1
 # Get all Products
 @app.get('/product')
 def list_products():
-    return {"status": 200, "response": products}
+    return products
 
 
 # Get Product by id
