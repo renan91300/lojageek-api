@@ -38,3 +38,16 @@ class Client(Base):#Define uma classe chamada Client que herda da classe Base,
     address = Column(String)
     phone = Column(String)
     cpf = Column(String)
+
+
+class Supplier(Base):
+    __tablename__ = "supplier"
+
+    id = Column(Integer, primary_key=True, index=True)
+    cnpj = Column(String)
+    company_name = Column(String)
+    contact_name = Column(String)
+    email = Column(String)
+    phone = Column(String)
+    address = Column(String)
+    
