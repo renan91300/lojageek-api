@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from .schemas.schemas import Product, Client
+from .schemas.schemas import Product, Client, Supplier
 from src.infra.sqlalchemy.config.database import get_db, create_db
 from src.infra.sqlalchemy.repos.product import RepoProduct
 from src.infra.sqlalchemy.repos.client import RepoClient
+from src.infra.sqlalchemy.repos.supplier import RepoSupplier
 
 create_db()
 
@@ -55,3 +56,26 @@ def delete_client(client_id: int, db:Session = Depends(get_db)):
         return {'status': 200, 'response': 'Client successfully deleted'}
 
     return {'status': 400, 'response': 'Error - Unable to delete the Client'}
+
+
+# Create Supplier
+@app.post('/supplier')
+def create_supplier(supplier: Supplier, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
+    supplier_created = RepoSupplier(db).create(supplier)
+    return {'status': 200, 'response': 'Supplier successfully created'}
+
+
+@app.get('/supplier')
+def list_suppliers(db:Session = Depends(get_db)):
+    suppliers_list = RepoSupplier(db).read()
+    return {'status': 200, 'response': suppliers_list}
+
+
+@app.delete('/supplier/{supplier_id}')
+def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
+    suppliers_deleted = RepoSupplier(db).delete(supplier_id)
+
+    if suppliers_deleted:
+        return {'status': 200, 'response': 'Supplier successfully deleted'}
+
+    return {'status': 400, 'response': 'Error - Unable to delete the Supplier'}
