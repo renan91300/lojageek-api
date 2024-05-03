@@ -2,16 +2,6 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 
-class Client(BaseModel):
-    id: Optional[str] = None
-    first_name: str
-    last_name: str
-    email: str
-    password: str
-    address: str
-    phone: str
-    cpf: str
-
 class Product(BaseModel):
     id: Optional[str] = None
     sku: str
@@ -33,9 +23,23 @@ class Product(BaseModel):
     class Config:
         orm_mode = True
 
-class Pedido(BaseModel):
+
+class Client(BaseModel):
     id: Optional[str] = None
-    quantidade: int
-    entrega: bool = False
-    endereco: str
-    observacoes: Optional[str] = "Sem Observações"
+    first_name: str
+    last_name: str
+    email: str
+    password: str
+    address: str
+    phone: str
+    cpf: str
+
+
+class Supplier(BaseModel):
+    id: Optional[str] = None
+    cnpj: str
+    company_name: str
+    contact_name: str
+    email: str
+    phone: str
+    address: str
