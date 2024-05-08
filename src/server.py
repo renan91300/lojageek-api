@@ -80,7 +80,11 @@ def delete_product(product_id: int, db:Session = Depends(get_db)):
 @app.post('/client')
 def create_client(client: Client, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     client_created = RepoClient(db).create(client)
-    return {'status': 200, 'response': 'Client successfully created'}
+    
+    if client_created:
+        return {'status': 200, 'response': 'Client successfully created'}
+
+    return {'status': 400, 'response': 'Error - Unable to create the Client'}
 
 #   read
 @app.get('/client')
