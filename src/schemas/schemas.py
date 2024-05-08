@@ -16,7 +16,7 @@ class Product(BaseModel):
     qty_items_per_box: int
     ean: str
     promo: bool = False
-    promo_discount: float
+    promo_discount: float = 0.00
     qty_stock: int
 
     class Config:
