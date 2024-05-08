@@ -27,7 +27,11 @@ app.add_middleware(
 @app.post('/category')
 def create_category(category: Category, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     category_created = RepoCategory(db).create(category)
-    return {'status': 200, 'response': 'Category successfully created'}
+    
+    if category_created:
+        return {'status': 200, 'response': 'Category successfully created'}
+
+    return {'status': 400, 'response': 'Error - Unable to create the Category'}
 
 #   read
 @app.get('/category')
