@@ -10,13 +10,15 @@ class RepoClient():
 
 
     def create(self, client: schemas.Client):# Covertendo o Schema em um modelo
-        db_client = models.Client(first_name=client.first_name, 
-                                    last_name=client.last_name,
-                                    email=client.email,
-                                    password=client.password,
-                                    address=client.address,
-                                    phone=client.phone,
-                                    cpf=client.cpf)
+        db_client = models.Client(
+            first_name=client.first_name, 
+            last_name=client.last_name,
+            email=client.email,
+            password=client.password,
+            address=client.address,
+            phone=client.phone,
+            cpf=client.cpf
+        )
         self.db.add(db_client)
         self.db.commit()
         self.db.refresh(db_client)
@@ -26,6 +28,7 @@ class RepoClient():
     def read(self):
         clients = self.db.query(models.Client).all()
         return  clients
+
 
     def delete(self, client_id: int):
         db_client = self.db.query(models.Client).filter(models.Client.id == client_id).first()
