@@ -15,8 +15,8 @@ class Product(BaseModel):
     size_length: float
     qty_items_per_box: int
     ean: str
-    promo: Optional[bool] = False
-    promo_discount: Optional[float] = 0.00
+    promo: bool = False
+    promo_discount: float
     qty_stock: int
 
     class Config:
