@@ -8,15 +8,14 @@ class Product(BaseModel):
     name: str
     description: str
     price: float
-    unit_type: str
     category: str
-    weight: float
-    width: float
-    height: float
-    length: float
+    size_weight: float
+    size_width: float
+    size_height: float
+    size_length: float
     qty_items_per_box: int
     ean: str
-    promo: bool = False
+    promo: Optional[bool] = False
     promo_discount: Optional[float] = 0.00
     qty_stock: int
 
