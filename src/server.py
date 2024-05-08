@@ -22,17 +22,20 @@ app.add_middleware(
 )
 
 
-# Create Category
+# Category
+#   create
 @app.post('/category')
 def create_category(category: Category, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     category_created = RepoCategory(db).create(category)
     return {'status': 200, 'response': 'Category successfully created'}
 
+#   read
 @app.get('/category')
 def list_categories(db:Session = Depends(get_db)):
     categories_list = RepoCategory(db).read()
     return {'status': 200, 'response': categories_list}
 
+#   delete
 @app.delete('/category/{category_id}')
 def delete_category(category_id: int, db: Session = Depends(get_db)):
     try:
@@ -44,7 +47,9 @@ def delete_category(category_id: int, db: Session = Depends(get_db)):
 
     return {'status': 400, 'response': 'Error - Unable to delete the Category'}
 
-# Create Product
+
+# Product
+#   create
 @app.post('/product')
 def create_product(product: Product, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     try:
@@ -53,13 +58,13 @@ def create_product(product: Product, db:Session = Depends(get_db)):# Depends vem
     except ValueError as ve:
         return {'status': 400, 'response': str(ve)}
 
-
+#   read
 @app.get('/product')
 def list_products(db:Session = Depends(get_db)):
     products_list = RepoProduct(db).read()
     return {'status': 200, 'response': products_list}
 
-
+#   delete
 @app.delete('/product/{product_id}')
 def delete_product(product_id: int, db:Session = Depends(get_db)):
     products_deleted = RepoProduct(db).delete(product_id)
@@ -70,19 +75,20 @@ def delete_product(product_id: int, db:Session = Depends(get_db)):
     return {'status': 400, 'response': 'Error - Unable to delete the Product'}
 
 
-# Create Client
+# Client
+#   create
 @app.post('/client')
 def create_client(client: Client, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     client_created = RepoClient(db).create(client)
     return {'status': 200, 'response': 'Client successfully created'}
 
-
+#   read
 @app.get('/client')
 def list_clients(db:Session = Depends(get_db)):
     clients_list = RepoClient(db).read()
     return {'status': 200, 'response': clients_list}
 
-
+#   delete
 @app.delete('/client/{client_id}')
 def delete_client(client_id: int, db:Session = Depends(get_db)):
     clients_deleted = RepoClient(db).delete(client_id)
@@ -93,19 +99,20 @@ def delete_client(client_id: int, db:Session = Depends(get_db)):
     return {'status': 400, 'response': 'Error - Unable to delete the Client'}
 
 
-# Create Supplier
+# Supplier
+#   create
 @app.post('/supplier')
 def create_supplier(supplier: Supplier, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
     supplier_created = RepoSupplier(db).create(supplier)
     return {'status': 200, 'response': 'Supplier successfully created'}
 
-
+#   read
 @app.get('/supplier')
 def list_suppliers(db:Session = Depends(get_db)):
     suppliers_list = RepoSupplier(db).read()
     return {'status': 200, 'response': suppliers_list}
 
-
+#   delete
 @app.delete('/supplier/{supplier_id}')
 def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
     suppliers_deleted = RepoSupplier(db).delete(supplier_id)
