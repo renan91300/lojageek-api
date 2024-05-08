@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .schemas.schemas import Product, Client, Supplier
+from .schemas.schemas import Product, Client, Supplier, Category
 from src.infra.sqlalchemy.config.database import get_db, create_db
 from src.infra.sqlalchemy.repos.product import RepoProduct
 from src.infra.sqlalchemy.repos.client import RepoClient
+from src.infra.sqlalchemy.repos.category import RepoCategory
 from src.infra.sqlalchemy.repos.supplier import RepoSupplier
 
 create_db()
@@ -21,11 +22,36 @@ app.add_middleware(
 )
 
 
+# Create Category
+@app.post('/category')
+def create_category(category: Category, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
+    category_created = RepoCategory(db).create(category)
+    return {'status': 200, 'response': 'Category successfully created'}
+
+@app.get('/category')
+def list_categories(db:Session = Depends(get_db)):
+    categories_list = RepoCategory(db).read()
+    return {'status': 200, 'response': categories_list}
+
+@app.delete('/category/{category_id}')
+def delete_category(category_id: int, db: Session = Depends(get_db)):
+    try:
+        category_deleted = RepoCategory(db).delete(category_id)
+        if category_deleted:
+            return {'status': 200, 'response': 'Category successfully deleted'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
+
+    return {'status': 400, 'response': 'Error - Unable to delete the Category'}
+
 # Create Product
 @app.post('/product')
 def create_product(product: Product, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    product_created = RepoProduct(db).create(product)
-    return {'status': 200, 'response': 'Product successfully created'}
+    try:
+        product_created = RepoProduct(db).create(product)
+        return {'status': 200, 'response': 'Product successfully created'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
 
 
 @app.get('/product')

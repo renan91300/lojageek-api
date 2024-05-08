@@ -8,7 +8,7 @@ class Product(BaseModel):
     name: str
     description: str
     price: float
-    category: str
+    category_id: int
     size_weight: float
     size_width: float
     size_height: float
@@ -18,6 +18,14 @@ class Product(BaseModel):
     promo: bool = False
     promo_discount: float
     qty_stock: int
+
+    class Config:
+        orm_mode = True
+
+
+class Category(BaseModel):
+    id: Optional[str] = None
+    name: str
 
     class Config:
         orm_mode = True

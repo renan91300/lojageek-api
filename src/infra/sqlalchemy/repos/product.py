@@ -9,13 +9,20 @@ class RepoProduct():
         
 
 
+    def category_exists(self, category_id: int):
+        return self.db.query(models.Category).filter(models.Category.id == category_id).first() is not None
+
+
     def create(self, product: schemas.Product):# Covertendo o Schema em um modelo
+        if not self.category_exists(product.category_id):
+            raise ValueError('Category not found')
+
         db_product = models.Product(
             sku=product.sku, 
             name=product.name,
             description=product.description,
             price=product.price,
-            category=product.category,
+            category_id=product.category_id,
             size_weight=product.size_weight,
             size_width=product.size_width,
             size_height=product.size_height,
@@ -26,7 +33,6 @@ class RepoProduct():
             promo_discount = product.promo_discount if product.promo and product.promo_discount is not None else 0.00,
             qty_stock=product.qty_stock
         )
-
         self.db.add(db_product)
         self.db.commit()
         self.db.refresh(db_product)
@@ -36,6 +42,7 @@ class RepoProduct():
     def read(self):
         products = self.db.query(models.Product).all()
         return  products
+
 
     def delete(self, product_id: int):
         db_product = self.db.query(models.Product).filter(models.Product.id == product_id).first()

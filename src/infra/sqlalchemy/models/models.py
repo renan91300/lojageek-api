@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from src.infra.sqlalchemy.config.database import Base
 
 
@@ -12,7 +13,7 @@ class Product(Base):#Define uma classe chamada Product que herda da classe Base,
     name = Column(String)
     description = Column(String)
     price = Column(Float)
-    category = Column(String)
+    category_id = Column(Integer, ForeignKey('category.id'))
     size_weight = Column(Float)
     size_width = Column(Float)
     size_height = Column(Float)
@@ -22,6 +23,17 @@ class Product(Base):#Define uma classe chamada Product que herda da classe Base,
     promo = Column (Boolean)
     promo_discount = Column(Float)
     qty_stock = Column(Integer)
+
+    category = relationship("Category", back_populates="products")
+
+
+class Category(Base):
+    __tablename__ = "category"
+
+    id = Column(Integer, primary_key=True, index=True )
+    name = Column(String)
+    
+    products = relationship("Product", back_populates="category")
 
 
 class Client(Base):#Define uma classe chamada Client que herda da classe Base, 
