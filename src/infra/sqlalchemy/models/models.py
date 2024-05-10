@@ -13,7 +13,6 @@ class Product(Base):#Define uma classe chamada Product que herda da classe Base,
     name = Column(String)
     description = Column(String)
     price = Column(Float)
-    category_id = Column(Integer, ForeignKey('category.id'))
     size_weight = Column(Float)
     size_width = Column(Float)
     size_height = Column(Float)
@@ -24,6 +23,7 @@ class Product(Base):#Define uma classe chamada Product que herda da classe Base,
     promo_discount = Column(Float)
     qty_stock = Column(Integer)
 
+    category_id = Column(Integer, ForeignKey('category.id', name="fk_product_category"))
     category = relationship("Category", back_populates="products")
 
 
@@ -34,6 +34,16 @@ class Category(Base):
     name = Column(String)
     
     products = relationship("Product", back_populates="category")
+
+
+class Order(Base):
+    __tablename__ = "order"
+
+    id = Column(Integer, primary_key=True, index=True )
+       
+    client_id = Column(Integer, ForeignKey("client.id", name="fk_order_client"))
+
+    client = relationship("Client", back_populates="order")
 
 
 class Client(Base):#Define uma classe chamada Client que herda da classe Base, 
@@ -49,6 +59,8 @@ class Client(Base):#Define uma classe chamada Client que herda da classe Base,
     address = Column(String)
     phone = Column(String)
     cpf = Column(String)
+
+    order = relationship("Order", back_populates="client")
 
 
 class Supplier(Base):
