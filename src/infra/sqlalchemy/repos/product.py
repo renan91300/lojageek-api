@@ -1,3 +1,4 @@
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
@@ -43,6 +44,34 @@ class RepoProduct():
         products = self.db.query(models.Product).all()
         return  products
 
+
+    def update(self, product: schemas.Product):
+        print(product)
+
+        update_stmt = update(models.Product).where(
+            models.Product.id == product.id
+        ).values(
+            sku=product.sku,
+            name=product.name,
+            description=product.description,
+            price=product.price,
+            category_id=product.category_id,
+            size_weight=product.size_weight,
+            size_width=product.size_width,
+            size_height=product.size_height,
+            size_length=product.size_length,
+            qty_items_per_box=product.qty_items_per_box,
+            ean=product.ean,
+            promo=product.promo,
+            promo_discount=product.promo_discount,
+            qty_stock=product.qty_stock
+        )
+
+        self.db.execute(update_stmt)
+        self.db.commit()
+
+        return  product
+    
 
     def delete(self, product_id: int):
         db_product = self.db.query(models.Product).filter(models.Product.id == product_id).first()

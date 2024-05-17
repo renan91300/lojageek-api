@@ -1,3 +1,4 @@
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
@@ -27,6 +28,26 @@ class RepoSupplier():
     def read(self):
         suppliers = self.db.query(models.Supplier).all()
         return  suppliers
+
+
+    def update(self, supplier: schemas.Supplier):
+        print(supplier)
+
+        update_stmt = update(models.Supplier).where(
+            models.Supplier.id == supplier.id
+        ).values(
+            cnpj=supplier.cnpj, 
+            company_name=supplier.company_name,
+            contact_name=supplier.contact_name,
+            email=supplier.email,
+            phone=supplier.phone,
+            address=supplier.address
+        )
+
+        self.db.execute(update_stmt)
+        self.db.commit()
+
+        return  supplier
 
 
     def delete(self, supplier_id: int):

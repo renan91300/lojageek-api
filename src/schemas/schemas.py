@@ -3,7 +3,7 @@ from typing import Optional, List
 
 
 class Product(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = 0
     sku: str
     name: str
     description: str
@@ -24,7 +24,7 @@ class Product(BaseModel):
 
 
 class Category(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = 0
     name: str
 
     class Config:
@@ -32,7 +32,7 @@ class Category(BaseModel):
 
 
 class Client(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = 0
     first_name: str
     last_name: str
     email: str
@@ -43,7 +43,7 @@ class Client(BaseModel):
 
 
 class Supplier(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = 0
     cnpj: str
     company_name: str
     contact_name: str

@@ -1,3 +1,4 @@
+from sqlalchemy import update
 from sqlalchemy.orm import Session
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
@@ -29,6 +30,27 @@ class RepoClient():
         clients = self.db.query(models.Client).all()
         return  clients
 
+
+    def update(self, client: schemas.Client):
+        print(client)
+
+        update_stmt = update(models.Client).where(
+            models.Client.id == client.id
+        ).values(
+            first_name=client.first_name, 
+            last_name=client.last_name,
+            email=client.email,
+            password=client.password,
+            address=client.address,
+            phone=client.phone,
+            cpf=client.cpf
+        )
+
+        self.db.execute(update_stmt)
+        self.db.commit()
+
+        return  client
+    
 
     def delete(self, client_id: int):
         db_client = self.db.query(models.Client).filter(models.Client.id == client_id).first()

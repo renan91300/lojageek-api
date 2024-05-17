@@ -68,12 +68,22 @@ def list_products(db:Session = Depends(get_db)):
     products_list = RepoProduct(db).read()
     return {'status': 200, 'response': products_list}
 
+#   update
+@app.put('/product')
+def update_product(product: Product, db:Session = Depends(get_db)):
+    product_updated = RepoProduct(db).update(product)
+    
+    if product_updated:
+        return {'status': 200, 'response': 'Product successfully updated'}
+
+    return {'status': 400, 'response': 'Error - Unable to update the Product'}
+
 #   delete
 @app.delete('/product/{product_id}')
 def delete_product(product_id: int, db:Session = Depends(get_db)):
-    products_deleted = RepoProduct(db).delete(product_id)
+    product_deleted = RepoProduct(db).delete(product_id)
 
-    if products_deleted:
+    if product_deleted:
         return {'status': 200, 'response': 'Product successfully deleted'}
 
     return {'status': 400, 'response': 'Error - Unable to delete the Product'}
@@ -96,12 +106,22 @@ def list_clients(db:Session = Depends(get_db)):
     clients_list = RepoClient(db).read()
     return {'status': 200, 'response': clients_list}
 
+#   update
+@app.put('/client')
+def update_client(client: Client, db:Session = Depends(get_db)):
+    client_updated = RepoClient(db).update(client)
+    
+    if client_updated:
+        return {'status': 200, 'response': 'Client successfully updated'}
+
+    return {'status': 400, 'response': 'Error - Unable to update the Client'}
+
 #   delete
 @app.delete('/client/{client_id}')
 def delete_client(client_id: int, db:Session = Depends(get_db)):
-    clients_deleted = RepoClient(db).delete(client_id)
+    client_deleted = RepoClient(db).delete(client_id)
 
-    if clients_deleted:
+    if client_deleted:
         return {'status': 200, 'response': 'Client successfully deleted'}
 
     return {'status': 400, 'response': 'Error - Unable to delete the Client'}
@@ -120,12 +140,22 @@ def list_suppliers(db:Session = Depends(get_db)):
     suppliers_list = RepoSupplier(db).read()
     return {'status': 200, 'response': suppliers_list}
 
+#   update
+@app.put('/supplier')
+def update_supplier(supplier: Supplier, db:Session = Depends(get_db)):
+    supplier_updated = RepoSupplier(db).update(supplier)
+    
+    if supplier_updated:
+        return {'status': 200, 'response': 'Supplier successfully updated'}
+
+    return {'status': 400, 'response': 'Error - Unable to update the Supplier'}
+
 #   delete
 @app.delete('/supplier/{supplier_id}')
 def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
-    suppliers_deleted = RepoSupplier(db).delete(supplier_id)
+    supplier_deleted = RepoSupplier(db).delete(supplier_id)
 
-    if suppliers_deleted:
+    if supplier_deleted:
         return {'status': 200, 'response': 'Supplier successfully deleted'}
 
     return {'status': 400, 'response': 'Error - Unable to delete the Supplier'}
