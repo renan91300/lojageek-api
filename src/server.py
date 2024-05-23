@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .schemas.schemas import Product, Client, Supplier, Category
+from .schemas.schemas import Product, Client, Supplier, Category, Order
 from src.infra.sqlalchemy.config.database import get_db, create_db
 from src.infra.sqlalchemy.repos.product import RepoProduct
 from src.infra.sqlalchemy.repos.client import RepoClient
 from src.infra.sqlalchemy.repos.category import RepoCategory
 from src.infra.sqlalchemy.repos.supplier import RepoSupplier
+from src.infra.sqlalchemy.repos.order import RepoOrder
 
 create_db()
 
@@ -159,3 +160,14 @@ def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
         return {'status': 200, 'response': 'Supplier successfully deleted'}
 
     return {'status': 400, 'response': 'Error - Unable to delete the Supplier'}
+
+
+# Order
+#   create
+@app.post('/order')
+def create_order(order: Order, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
+    try:
+        order_created = RepoOrder(db).create(order)
+        return {'status': 200, 'response': 'Order successfully created'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}

@@ -31,6 +31,15 @@ class Category(BaseModel):
         orm_mode = True
 
 
+class Order(BaseModel):
+    id: Optional[int] = 0
+    client_id: int
+    items: List[int]
+
+    class Config:
+        orm_mode = True
+
+
 class Client(BaseModel):
     id: Optional[int] = 0
     first_name: str
