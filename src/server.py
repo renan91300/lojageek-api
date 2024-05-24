@@ -163,6 +163,13 @@ def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
 
 
 # Order
+#   read
+@app.get('/order')
+def list_orders(db:Session = Depends(get_db)):
+    orders_list = RepoOrder(db).read()
+    return {'status': 200, 'response': orders_list}
+
+
 #   create
 @app.post('/order')
 def create_order(order: Order, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
@@ -171,3 +178,29 @@ def create_order(order: Order, db:Session = Depends(get_db)):# Depends vem do Fa
         return {'status': 200, 'response': 'Order successfully created'}
     except ValueError as ve:
         return {'status': 400, 'response': str(ve)}
+    
+
+#   update
+@app.put('/order')
+def update_order(order: Order, db:Session = Depends(get_db)):
+    try:
+        order_updated = RepoOrder(db).update(order)
+    
+        if order_updated:
+            return {'status': 200, 'response': 'Order successfully updated'}
+
+        return {'status': 400, 'response': 'Error - Unable to update the Order'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
+
+
+#   delete
+@app.delete('/order/{order_id}')
+def delete_order(order_id: int, db:Session = Depends(get_db)):
+    order_deleted = RepoOrder(db).delete(order_id)
+
+    if order_deleted:
+        return {'status': 200, 'response': 'Order successfully deleted'}
+
+    return {'status': 400, 'response': 'Error - Unable to delete the Order'}
+    
