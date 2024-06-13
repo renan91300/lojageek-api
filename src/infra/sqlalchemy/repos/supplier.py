@@ -7,8 +7,6 @@ class RepoSupplier():
 
     def __init__(self, db: Session):
         self.db = db
-        
-
 
     def create(self, supplier: schemas.Supplier):# Covertendo o Schema em um modelo
         db_supplier = models.Supplier(
@@ -31,23 +29,26 @@ class RepoSupplier():
 
 
     def update(self, supplier: schemas.Supplier):
-        print(supplier)
+        db_supplier = self.db.query(models.Supplier).filter(models.Supplier.id == supplier.id).first() is not None
 
-        update_stmt = update(models.Supplier).where(
-            models.Supplier.id == supplier.id
-        ).values(
-            cnpj=supplier.cnpj, 
-            company_name=supplier.company_name,
-            contact_name=supplier.contact_name,
-            email=supplier.email,
-            phone=supplier.phone,
-            address=supplier.address
-        )
+        if db_supplier: 
+            update_stmt = update(models.Supplier).where(
+                models.Supplier.id == supplier.id
+            ).values(
+                cnpj=supplier.cnpj, 
+                company_name=supplier.company_name,
+                contact_name=supplier.contact_name,
+                email=supplier.email,
+                phone=supplier.phone,
+                address=supplier.address
+            )
 
-        self.db.execute(update_stmt)
-        self.db.commit()
+            self.db.execute(update_stmt)
+            self.db.commit()
 
-        return  supplier
+            return True
+        raise ValueError('ID do fornecedor não encontrado.')
+
 
 
     def delete(self, supplier_id: int):
@@ -57,4 +58,4 @@ class RepoSupplier():
             self.db.delete(db_supplier)
             self.db.commit()
             return True
-        return False
+        raise ValueError('ID do fornecedor não encontrado.')
