@@ -16,7 +16,7 @@ class RepoProduct():
 
     def create(self, product: schemas.Product):# Covertendo o Schema em um modelo
         if not self.category_exists(product.category_id):
-            raise ValueError('Category not found')
+            raise ValueError('Categoria não encontrada')
 
         db_product = models.Product(
             sku=product.sku, 
@@ -75,7 +75,7 @@ class RepoProduct():
 
     def delete(self, product_id: int):
         db_product = self.db.query(models.Product).filter(models.Product.id == product_id).first()
-
+        
         if db_product:
             self.db.delete(db_product)
             self.db.commit()

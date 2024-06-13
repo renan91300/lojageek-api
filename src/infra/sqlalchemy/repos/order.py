@@ -20,7 +20,7 @@ class RepoOrder():
 
     def create(self, order: schemas.Order):# Covertendo o Schema em um modelo
         if not self.client_exists(order.client_id):
-            raise ValueError('Client not found')
+            raise ValueError('Cliente não encontrado')
 
         db_order = models.Order(client_id=order.client_id)
         self.db.add(db_order)
@@ -28,7 +28,7 @@ class RepoOrder():
 
         for item in order.items:
             if not self.product_exists(item):
-                raise ValueError('Product not found')
+                raise ValueError('Produto não encontrado')
             
             order_item = models.OrderItem(order_id=db_order.id, product_id=item)
             self.db.add(order_item)
@@ -55,7 +55,7 @@ class RepoOrder():
 
         for item in order.items:
             if not self.product_exists(item):
-                raise ValueError('Product not found')
+                raise ValueError('Produto não encontrado')
             
             order_item = models.OrderItem(order_id=order.id, product_id=item)
             self.db.add(order_item)

@@ -16,7 +16,7 @@ class RepoCategory():
         self.db.refresh(db_category)
         return db_category
 
-
+ 
     def read(self):
         categories = self.db.query(models.Category).all()
         return  categories
@@ -26,7 +26,7 @@ class RepoCategory():
         products_with_category = self.db.query(models.Product).filter(models.Product.category_id == category_id).first()
 
         if products_with_category:
-            raise ValueError('Cannot delete category because there are products associated with it.')
+            raise ValueError('Não é possível deletar a categoria pois há produtos associados à ela.')
 
         db_category = self.db.query(models.Category).filter(models.Category.id == category_id).first()
 
@@ -34,4 +34,4 @@ class RepoCategory():
             self.db.delete(db_category)
             self.db.commit()
             return True
-        raise ValueError('Category ID not found.')
+        raise ValueError('ID da categoria não encontrado.')
