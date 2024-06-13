@@ -1,13 +1,7 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from .schemas.schemas import Product, Client, Supplier, Category, Order
-from src.infra.sqlalchemy.config.database import get_db, create_db
-from src.infra.sqlalchemy.repos.product import RepoProduct
-from src.infra.sqlalchemy.repos.client import RepoClient
-from src.infra.sqlalchemy.repos.category import RepoCategory
-from src.infra.sqlalchemy.repos.supplier import RepoSupplier
-from src.infra.sqlalchemy.repos.order import RepoOrder
+from src.infra.sqlalchemy.config.database import create_db
+from src.routes import category, client, order, product, supplier
 
 create_db()
 
@@ -23,184 +17,12 @@ app.add_middleware(
 )
 
 
-# Category
-#   create
-@app.post('/category')
-def create_category(category: Category, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    category_created = RepoCategory(db).create(category)
-    
-    if category_created:
-        return {'status': 200, 'response': 'Category successfully created'}
+app.include_router(category.router)
 
-    return {'status': 400, 'response': 'Error - Unable to create the Category'}
+app.include_router(client.router)
 
-#   read
-@app.get('/category')
-def list_categories(db:Session = Depends(get_db)):
-    categories_list = RepoCategory(db).read()
-    return {'status': 200, 'response': categories_list}
+app.include_router(order.router)
 
-#   delete
-@app.delete('/category/{category_id}')
-def delete_category(category_id: int, db: Session = Depends(get_db)):
-    try:
-        category_deleted = RepoCategory(db).delete(category_id)
-        if category_deleted:
-            return {'status': 200, 'response': 'Category successfully deleted'}
-    except ValueError as ve:
-        return {'status': 400, 'response': str(ve)}
+app.include_router(product.router)
 
-    return {'status': 400, 'response': 'Error - Unable to delete the Category'}
-
-
-# Product
-#   create
-@app.post('/product')
-def create_product(product: Product, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    try:
-        product_created = RepoProduct(db).create(product)
-        return {'status': 200, 'response': 'Product successfully created'}
-    except ValueError as ve:
-        return {'status': 400, 'response': str(ve)}
-
-#   read
-@app.get('/product')
-def list_products(db:Session = Depends(get_db)):
-    products_list = RepoProduct(db).read()
-    return {'status': 200, 'response': products_list}
-
-#   update
-@app.put('/product')
-def update_product(product: Product, db:Session = Depends(get_db)):
-    product_updated = RepoProduct(db).update(product)
-    
-    if product_updated:
-        return {'status': 200, 'response': 'Product successfully updated'}
-
-    return {'status': 400, 'response': 'Error - Unable to update the Product'}
-
-#   delete
-@app.delete('/product/{product_id}')
-def delete_product(product_id: int, db:Session = Depends(get_db)):
-    product_deleted = RepoProduct(db).delete(product_id)
-
-    if product_deleted:
-        return {'status': 200, 'response': 'Product successfully deleted'}
-
-    return {'status': 400, 'response': 'Error - Unable to delete the Product'}
-
-
-# Client
-#   create
-@app.post('/client')
-def create_client(client: Client, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    client_created = RepoClient(db).create(client)
-    
-    if client_created:
-        return {'status': 200, 'response': 'Client successfully created'}
-
-    return {'status': 400, 'response': 'Error - Unable to create the Client'}
-
-#   read
-@app.get('/client')
-def list_clients(db:Session = Depends(get_db)):
-    clients_list = RepoClient(db).read()
-    return {'status': 200, 'response': clients_list}
-
-#   update
-@app.put('/client')
-def update_client(client: Client, db:Session = Depends(get_db)):
-    client_updated = RepoClient(db).update(client)
-    
-    if client_updated:
-        return {'status': 200, 'response': 'Client successfully updated'}
-
-    return {'status': 400, 'response': 'Error - Unable to update the Client'}
-
-#   delete
-@app.delete('/client/{client_id}')
-def delete_client(client_id: int, db:Session = Depends(get_db)):
-    client_deleted = RepoClient(db).delete(client_id)
-
-    if client_deleted:
-        return {'status': 200, 'response': 'Client successfully deleted'}
-
-    return {'status': 400, 'response': 'Error - Unable to delete the Client'}
-
-
-# Supplier
-#   create
-@app.post('/supplier')
-def create_supplier(supplier: Supplier, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    supplier_created = RepoSupplier(db).create(supplier)
-    return {'status': 200, 'response': 'Supplier successfully created'}
-
-#   read
-@app.get('/supplier')
-def list_suppliers(db:Session = Depends(get_db)):
-    suppliers_list = RepoSupplier(db).read()
-    return {'status': 200, 'response': suppliers_list}
-
-#   update
-@app.put('/supplier')
-def update_supplier(supplier: Supplier, db:Session = Depends(get_db)):
-    supplier_updated = RepoSupplier(db).update(supplier)
-    
-    if supplier_updated:
-        return {'status': 200, 'response': 'Supplier successfully updated'}
-
-    return {'status': 400, 'response': 'Error - Unable to update the Supplier'}
-
-#   delete
-@app.delete('/supplier/{supplier_id}')
-def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
-    supplier_deleted = RepoSupplier(db).delete(supplier_id)
-
-    if supplier_deleted:
-        return {'status': 200, 'response': 'Supplier successfully deleted'}
-
-    return {'status': 400, 'response': 'Error - Unable to delete the Supplier'}
-
-
-# Order
-#   read
-@app.get('/order')
-def list_orders(db:Session = Depends(get_db)):
-    orders_list = RepoOrder(db).read()
-    return {'status': 200, 'response': orders_list}
-
-
-#   create
-@app.post('/order')
-def create_order(order: Order, db:Session = Depends(get_db)):# Depends vem do FastAPI para injetar oque passamos
-    try:
-        order_created = RepoOrder(db).create(order)
-        return {'status': 200, 'response': 'Order successfully created'}
-    except ValueError as ve:
-        return {'status': 400, 'response': str(ve)}
-    
-
-#   update
-@app.put('/order')
-def update_order(order: Order, db:Session = Depends(get_db)):
-    try:
-        order_updated = RepoOrder(db).update(order)
-    
-        if order_updated:
-            return {'status': 200, 'response': 'Order successfully updated'}
-
-        return {'status': 400, 'response': 'Error - Unable to update the Order'}
-    except ValueError as ve:
-        return {'status': 400, 'response': str(ve)}
-
-
-#   delete
-@app.delete('/order/{order_id}')
-def delete_order(order_id: int, db:Session = Depends(get_db)):
-    order_deleted = RepoOrder(db).delete(order_id)
-
-    if order_deleted:
-        return {'status': 200, 'response': 'Order successfully deleted'}
-
-    return {'status': 400, 'response': 'Error - Unable to delete the Order'}
-    
+app.include_router(supplier.router)
