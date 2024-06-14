@@ -78,9 +78,6 @@ class RepoProduct():
     def delete(self, product_id: int):
         product_associated = self.db.query(models.OrderItem).filter(models.OrderItem.product_id == product_id).first()
         
-        if product_associated:
-            raise ValueError('Não é possível excluir o produto, pois está associado a um pedido.')
-        
         db_product = self.db.query(models.Product).filter(models.Product.id == product_id).first()
         
         if db_product:
