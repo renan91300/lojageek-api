@@ -28,7 +28,7 @@ class RepoOrder():
 
         for item in order.items:
             if not self.product_exists(item):
-                raise ValueError('Produto não encontrado')
+                raise ValueError(f'Produto {item} não encontrado')
             
             order_item = models.OrderItem(order_id=db_order.id, product_id=item)
             self.db.add(order_item)
@@ -42,37 +42,49 @@ class RepoOrder():
         orders = self.db.query(models.Order).options(joinedload(models.Order.order_items)).all()
         return  orders
     
+
     def update(self, order: schemas.Order):   
-        delete_stmt = delete(models.OrderItem).filter(models.OrderItem.order_id == order.id)
-        self.db.execute(delete_stmt)
-        
-        update_stmt = update(models.Order).where(
-            models.Order.id == order.id
-        ).values(
-            client_id = order.client_id,
+        db_order = self.db.query(models.Order).filter(models.Order.id == order.id).first() is not None
 
-        )
-
-        for item in order.items:
-            if not self.product_exists(item):
-                raise ValueError('Produto não encontrado')
+        if db_order:
+            if not self.client_exists(order.client_id):
+                raise ValueError('Cliente não encontrado')
             
-            order_item = models.OrderItem(order_id=order.id, product_id=item)
-            self.db.add(order_item)
+            delete_stmt = delete(models.OrderItem).filter(models.OrderItem.order_id == order.id)
+            
+            self.db.execute(delete_stmt)
 
-        self.db.execute(update_stmt)
-        self.db.commit()
+            update_stmt = update(models.Order).where(
+                models.Order.id == order.id
+            ).values(
+                client_id = order.client_id,
+            )
 
-        return  order
+            for item in order.items:
+                if not self.product_exists(item):
+                    raise ValueError(f'Produto {item} não encontrado')
+                
+                order_item = models.OrderItem(order_id=order.id, product_id=item)
+                self.db.add(order_item)
+
+            self.db.execute(update_stmt)
+            self.db.commit()
+
+            return  True
+        raise ValueError('ID do pedido não encontrado.')
     
-    def delete(self, order_id: int):
-        # db_order = self.db.query(models.Order).filter(models.Order.id == order_id).first()
-        delete_items_stmt = delete(models.OrderItem).filter(models.OrderItem.order_id == order_id)
-        delete_order_stmt = delete(models.Order).filter(models.Order.id == order_id)
 
-        self.db.execute(delete_items_stmt)
-        order_deleted = self.db.execute(delete_order_stmt)        
-        self.db.commit()
-        if order_deleted.rowcount > 0:
-            return True
-        return False
+    def delete(self, order_id: int):
+        db_order = self.db.query(models.Order).filter(models.Order.id == order_id).first() is not None
+
+        if db_order:
+            delete_items_stmt = delete(models.OrderItem).filter(models.OrderItem.order_id == order_id)
+            delete_order_stmt = delete(models.Order).filter(models.Order.id == order_id)
+
+            self.db.execute(delete_items_stmt)
+            order_deleted = self.db.execute(delete_order_stmt)        
+            self.db.commit()
+            if order_deleted.rowcount > 0:
+                return True
+            return False
+        raise ValueError('ID do pedido não encontrado.')

@@ -58,7 +58,7 @@ class RepoClient():
         clients_with_order = self.db.query(models.Order).filter(models.Order.client_id == client_id).first()
 
         if clients_with_order:
-            raise ValueError('Não é possível deletar o cliente pois há pedidos associados à ele.')
+            raise ValueError('Não é possível excluir o cliente pois há pedidos associados à ele.')
 
         db_client = self.db.query(models.Client).filter(models.Client.id == client_id).first()
 

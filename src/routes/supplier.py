@@ -14,21 +14,27 @@ def create_supplier(supplier: Supplier, db:Session = Depends(get_db)):# Depends 
     supplier_created = RepoSupplier(db).create(supplier)
     return {'status': 200, 'response': 'Fornecedor criado com sucesso.'}
 
+
 #   read
 @router.get('/supplier')
 def list_suppliers(db:Session = Depends(get_db)):
     suppliers_list = RepoSupplier(db).read()
     return {'status': 200, 'response': suppliers_list}
 
+
 #   update
 @router.put('/supplier')
 def update_supplier(supplier: Supplier, db:Session = Depends(get_db)):
-    supplier_updated = RepoSupplier(db).update(supplier)
+    try:
+        supplier_updated = RepoSupplier(db).update(supplier)
     
-    if supplier_updated:
-        return {'status': 200, 'response': 'Fornecedor atualizado com sucesso.'}
-
+        if supplier_updated:
+            return {'status': 200, 'response': 'Fornecedor atualizado com sucesso.'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
+    
     return {'status': 400, 'response': 'Erro -  Não foi possível atualizar o fornecedor'}
+
 
 #   delete
 @router.delete('/supplier/{supplier_id}')
@@ -38,4 +44,4 @@ def delete_supplier(supplier_id: int, db:Session = Depends(get_db)):
     if supplier_deleted:
         return {'status': 200, 'response': 'Fornecedor deletado com sucesso.'}
 
-    return {'status': 400, 'response': 'Erro -  Não foi possível deletar o fornecedor'}
+    return {'status': 400, 'response': 'Erro -  Não foi possível excluir o fornecedor'}

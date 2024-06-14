@@ -41,9 +41,12 @@ def update_order(order: Order, db:Session = Depends(get_db)):
 #   delete
 @router.delete('/order/{order_id}')
 def delete_order(order_id: int, db:Session = Depends(get_db)):
-    order_deleted = RepoOrder(db).delete(order_id)
+    try:
+        order_deleted = RepoOrder(db).delete(order_id)
 
-    if order_deleted:
-        return {'status': 200, 'response': 'Pedido deletado com sucesso.'}
+        if order_deleted:
+            return {'status': 200, 'response': 'Pedido deletado com sucesso.'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
 
-    return {'status': 400, 'response': 'Erro - Não foi possível deletar o pedido'}
+    return {'status': 400, 'response': 'Erro - Não foi possível excluir o pedido'}

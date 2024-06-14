@@ -27,6 +27,20 @@ def list_categories(db:Session = Depends(get_db)):
     return {'status': 200, 'response': categories_list}
 
 
+#   update
+@router.put('/category')
+def update_category(category: Category, db:Session = Depends(get_db)):
+    try:
+        category_updated = RepoCategory(db).update(category)
+    
+        if category_updated:
+            return {'status': 200, 'response': 'Categoria atualizada com sucesso.'}
+    except ValueError as ve:
+        return {'status': 400, 'response': str(ve)}
+    
+    return {'status': 400, 'response': 'Erro - Não foi possível atualizar a categoria'}
+
+
 #   delete
 @router.delete('/category/{category_id}')
 def delete_category(category_id: int, db: Session = Depends(get_db)):
@@ -37,4 +51,4 @@ def delete_category(category_id: int, db: Session = Depends(get_db)):
     except ValueError as ve:
         return {'status': 400, 'response': str(ve)}
 
-    return {'status': 400, 'response': 'Erro - Não Foi possível deletar a categoria'}
+    return {'status': 400, 'response': 'Erro - Não Foi possível excluir a categoria'}

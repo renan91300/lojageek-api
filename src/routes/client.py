@@ -50,4 +50,4 @@ def delete_client(client_id: int, db:Session = Depends(get_db)):
     except ValueError as ve:
         return {'status': 400, 'response': str(ve)}
 
-    return {'status': 400, 'response': 'Erro - Não foi possível deletar o cliente'}
+    return {'status': 400, 'response': 'Erro - Não foi possível excluir o cliente'}
